@@ -27,7 +27,7 @@ class  new_roulette(gym.Env):
 			reward =  -1.0
 
 		self.budget = self.budget+reward
-		return  0, reward,  False, {}
+		return  0, reward,  False, {}, self.budget
 
 	def  reset(self):
 		return  0
