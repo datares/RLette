@@ -16,9 +16,11 @@ class  new_roulette(gym.Env):
 		assert  self.action_space.contains(action)
 		if action ==  self.n -  1:
 			# observation, reward, done, info
-			return  0,  0,  True, {}
+			return  0,  0,  True, {}, self.budget
 		# N.B. np.random.randint draws from [A, B) while random.randint 		draws from [A,B]
 		val =  self.np_random.randint(0,  self.n -  1)
+		if val == action:
+			reward = 15
 		if val == action ==  0:
 			reward =  self.n -  2.0
 		elif val !=  0  and action !=  0  and val %  2  == action %  2:
@@ -27,7 +29,7 @@ class  new_roulette(gym.Env):
 			reward =  -1.0
 
 		self.budget = self.budget+reward
-		return  0, reward,  False, {}, self.budget
+		return  0, reward,  False, {}, self.budget, val, action
 
 	def  reset(self):
 		return  0
