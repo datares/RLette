@@ -16,7 +16,6 @@ class new_roulette(gym.Env):
 		return  [seed]
 	def  step(self, action):
 		#assert  self.action_space.contains(action)
-		print(action)
 		#	Pick a value for the roulette 
 		val =  self.np_random.randint(0,  self.n -  1)
 		obs = [val, 
