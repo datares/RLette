@@ -52,7 +52,7 @@ class datares_roulette(gym.Env):
 			pass
 
 		self.budget = self.budget + reward
-		# KEY: NUMBER, BUDGET, EVEN, ODD, Ist THIRD, IInd THIRD, IIIrd THIRD, 1ST Half, 2nd Half
+		
 		obs = [val, 
 			self.budget, 
 			val % 2 == 0, 
@@ -62,7 +62,9 @@ class datares_roulette(gym.Env):
 			val >= 25 and val <= 36,
 			val >= 1 and val <= 18, 
 			val >= 19 and val <= 36]
-
+		#print("KEY: NUMBER, BUDGET, EVEN, ODD, Ist THIRD, IInd THIRD, IIIrd THIRD, 1ST Half, 2nd Half")
+		#print(obs)
+		#print(action)
 		return  obs, reward, self.budget < 100, {}
 
 	def  reset(self):
