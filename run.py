@@ -1,16 +1,18 @@
 
 from lib.env.roulette import datares_roulette
+from lib.env.roulette import combos
 
 from stable_baselines.deepq.policies import MlpPolicy
 from stable_baselines.common.vec_env import DummyVecEnv
 from stable_baselines import DQN, PPO2
 from stable_baselines.common.policies import MlpPolicy
-from lib.env.roulette import combos
+
 from itertools import combinations 
 import pandas as pd
 import gym
 import numpy as np
 import argparse
+import os
 
 def play(model):
 	arr = combos()
@@ -76,5 +78,7 @@ if __name__ == "__main__":
 	if args.mode == "train":
 		model = train_PPO2_agent(args.name, 7000000)
 	if args.mode == "test":
-		model = PPO2.load(args.name)
+		model_path = os.path.join('models', args.name)
+		model = PPO2.load(model_path)
+
 	test_model(model, EPISODES, STEPS, env)
