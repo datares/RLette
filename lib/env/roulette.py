@@ -1,46 +1,72 @@
 import gym
 import numpy as np
-import roulette
-#env = gym.make('Roulette-v0')
-RLette=roulette.n
-
-import gym
-
 from gym import spaces
 from gym.utils import seeding
+import pandas as pd
 
-class new_roulette(gym.Env):
+def combos():
+    df = pd.read_csv("combos_8.csv") 
+    return df.iloc[:,:-1].values
+
+class datares_roulette(gym.Env):
 	def  __init__(self, spots=37):
 		self.n = spots +  1
-		self.action_space = spaces.Discrete(self.n)
-		self.observation_space = spaces.Discrete(1)
+		# TODO change this
+		self.action_space = spaces.Discrete(250)
+		self.observation_space = spaces.Box(low=0, high=1000, shape = (9,), dtype=np.int32)
 		self.seed()
 		self.budget = 500
+		self.combos = combos()
 	def  seed(self, seed=None):
 		self.np_random, seed = seeding.np_random(seed)
 		return  [seed]
 	def  step(self, action):
-		assert  self.action_space.contains(action)
-		if action ==  self.n -  1:  
-			# observation, reward, done, info
-			return  0,  0,  True, {}
-
-		#	Pick a value for the roulette 
-		val =  self.np_random.randint(0,  self.n -  1)
-		
-		if val == action ==  0:
-			reward =  self.n -  2.0
-		elif val !=  0  and action !=  0  and val %  2  == action %  2:
-			reward = 1.0
+		if action == 255:
+			action = [0,0,0,0,0,0,0,0]
 		else:
-			reward = -1.0
-		
-		#	COULD INTRODUCE REWARD CLIPPING
+			action = np.array(self.combos[action])
+
+		if action.shape == (1, 8):
+			action = action[0]
+	
+		val =  self.np_random.randint(0,  self.n -  1)
+		obs = [val, 
+			self.budget, 
+			val % 2 == 0, 
+			val % 2 != 0, 
+			val >= 1 and val <= 12, 
+			val >= 13 and val <= 24, 
+			val >= 25 and val <= 36,
+			val >= 1 and val <= 18, 
+			val >= 19 and val <= 36]
+
+		reward = 0
+		try:
+			for i in range(len(obs) - 2):
+				if obs[i + 2] and action[i]:
+					reward += 1
+				if not obs[i + 2] and action[i]:
+					reward -= 1
+		except: 
+			print("error")
+			pass
 
 		self.budget = self.budget + reward
-		return  0, reward, self.budget < 100, {}
+		
+		obs = [val, 
+			self.budget, 
+			val % 2 == 0, 
+			val % 2 != 0, 
+			val >= 1 and val <= 12, 
+			val >= 13 and val <= 24, 
+			val >= 25 and val <= 36,
+			val >= 1 and val <= 18, 
+			val >= 19 and val <= 36]
+		#print("KEY: NUMBER, BUDGET, EVEN, ODD, Ist THIRD, IInd THIRD, IIIrd THIRD, 1ST Half, 2nd Half")
+		#print(obs)
+		#print(action)
+		return  obs, reward, self.budget < 100, {}
 
 	def  reset(self):
 		self.budget = 500
-		return 0
-	
+		return [0,self.budget,0,0,0,0,0,0,0]
