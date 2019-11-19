@@ -26,7 +26,7 @@ void generateAllBinaryStrings(int n, int arr[], int i, std::ofstream* out) {
   
 // Driver Code 
 int main() { 
-    int n = 8; 
+    int n = 7; 
   
     int arr[n]; 
     std::ofstream out("combos.csv", std::ofstream::out);;
