@@ -5,14 +5,14 @@ from gym.utils import seeding
 import pandas as pd
 
 def combos():
-    df = pd.read_csv("combos_8.csv") 
+    df = pd.read_csv("combos_7.csv", header=None) 
     return df.iloc[:,:-1].values
 
 class datares_roulette(gym.Env):
 	def  __init__(self, spots=37):
 		self.n = spots +  1
 		# TODO change this
-		self.action_space = spaces.Discrete(250)
+		self.action_space = spaces.Discrete(128)
 		self.observation_space = spaces.Box(low=0, high=1000, shape = (9,), dtype=np.int32)
 		self.seed()
 		self.budget = 500
@@ -21,12 +21,12 @@ class datares_roulette(gym.Env):
 		self.np_random, seed = seeding.np_random(seed)
 		return  [seed]
 	def  step(self, action):
-		if action == 255:
-			action = [0,0,0,0,0,0,0,0]
-		else:
-			action = np.array(self.combos[action])
+		#if action == 127:
+		#	action = np.array([0,0,0,0,0,0,0])
+		#else:
+		action = np.array(self.combos[action])
 
-		if action.shape == (1, 8):
+		if action.shape == (1, 7):
 			action = action[0]
 	
 		val =  self.np_random.randint(0,  self.n -  1)
