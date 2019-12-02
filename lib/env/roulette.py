@@ -9,13 +9,12 @@ def combos():
     return df.iloc[:,:-1].values
 
 class datares_roulette(gym.Env):
-	def  __init__(self, spots=37):
+	def  __init__(self, spots=37, budget=500):
 		self.n = spots +  1
-		# TODO change this
 		self.action_space = spaces.Discrete(128)
 		self.observation_space = spaces.Box(low=0, high=1000, shape = (9,), dtype=np.int32)
 		self.seed()
-		self.budget = 500
+		self.budget = budget
 		self.combos = combos()
 	def  seed(self, seed=None):
 		self.np_random, seed = seeding.np_random(seed)
@@ -62,9 +61,7 @@ class datares_roulette(gym.Env):
 			val >= 25 and val <= 36,
 			val >= 1 and val <= 18, 
 			val >= 19 and val <= 36]
-		#print("KEY: NUMBER, BUDGET, EVEN, ODD, Ist THIRD, IInd THIRD, IIIrd THIRD, 1ST Half, 2nd Half")
-		#print(obs)
-		#print(action)
+
 		return  obs, reward, self.budget < 100, {}
 
 	def  reset(self):

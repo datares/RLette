@@ -2,7 +2,7 @@
 from lib.env.roulette import datares_roulette
 from lib.env.roulette import combos
 
-from lib.agents.fall import test_nn
+from lib.agents.fall import test_a2c, test_ppo
 
 from itertools import combinations 
 import pandas as pd
@@ -30,11 +30,13 @@ def compute_reward(obs, action):
 	return reward
 def multiplayer_roulette(cycles):
 	budgets = []
-	agents =  [test_nn("500k.zip"), test_nn("1m.zip"), test_nn("2m.zip")]
+	agents =  [test_a2c("QJ_3M.zip"), test_ppo("FRANCESCO_1M.zip")]
+
 	for i in range(len(agents)):
 		budgets.append(500)
 
-	for _ in range(cycles):
+	for current_cycle in range(cycles):
+		print("[{}/{}]\n".format(current_cycle, cycles))
 		val = random.randint(0, 38) 
 		obs = [val, 
 				500, 
@@ -50,9 +52,9 @@ def multiplayer_roulette(cycles):
 			action, reward = step(obs, agents[i])
 			budgets[i] += reward
 			pred.append((val, action))
-
-		print(pred, budgets)
-
+		print("--> EXTRACTED {}".format(val))
+		for i, (val,action) in enumerate(pred):
+			print("agent [{}] - [{}]:\n\taction --> {}\n\tbudget --> {}".format(i,agents[i], action, budgets[i]))
 def test_model(model, episodes, steps, env):
 	average_gain = []
 	for _ in  range(episodes):
@@ -79,4 +81,4 @@ def mean(arr):
 	return sum
 
 if __name__ == "__main__":
-	multiplayer_roulette(10000)
+	multiplayer_roulette(3000)
