@@ -2,10 +2,7 @@
 from lib.env.roulette import datares_roulette
 from lib.env.roulette import combos
 
-from stable_baselines.deepq.policies import MlpPolicy
-from stable_baselines.common.vec_env import DummyVecEnv
-from stable_baselines import DQN, PPO2
-from stable_baselines.common.policies import MlpPolicy
+from lib.agents.fall import test_francesco
 
 from itertools import combinations 
 import pandas as pd
@@ -13,12 +10,30 @@ import gym
 import numpy as np
 import argparse
 import os
+import random
 
-def play(model):
+def step(obs, model):
 	arr = combos()
-	while(1):
-		val = input("Enter number")
-		val = int(val)
+	action = arr[model.predict(obs)]	
+	if action.shape == (1, 7):
+		action = action[0]
+
+	reward = compute_reward(obs, action)
+	return action, reward
+def compute_reward(obs, action):
+	reward = 0
+	for i in range(len(obs) - 2):
+		if obs[i + 2] and action[i]:
+			reward += 1
+		if not obs[i + 2] and action[i]:
+			reward -= 1
+	return reward
+def multiplayer_roulette(cycles):
+	budgets = [500, 500, 500]
+	agents =  [test_francesco("500k.zip"), test_francesco("1m.zip"), test_francesco("2m.zip")]
+
+	for _ in range(cycles):
+		val = random.randint(0, 38) 
 		obs = [val, 
 				500, 
 				val % 2 == 0, 
@@ -28,15 +43,14 @@ def play(model):
 				val >= 25 and val <= 36,
 				val >= 1 and val <= 18, 
 				val >= 19 and val <= 36]
-		pred = model.predict(obs)
-		print(arr[pred])
-def train_PPO2_agent(name, timesteps=1000):
-	env = datares_roulette()
-	env = DummyVecEnv([lambda: env])
-	model = PPO2(MlpPolicy, env, verbose=1)
-	model.learn(total_timesteps=timesteps)
-	model.save(name)
-	return model
+		pred = []
+		for i in range(len(agents)):
+			action, reward = step(obs, agents[i])
+			budgets[i] += reward
+			pred.append((val, action))
+
+		print(pred, budgets)
+
 def test_model(model, episodes, steps, env):
 	average_gain = []
 	for _ in  range(episodes):
@@ -63,22 +77,4 @@ def mean(arr):
 	return sum
 
 if __name__ == "__main__":
-	EPISODES = 1000
-	STEPS = 500
-	parser = argparse.ArgumentParser()
-	parser.add_argument('-m', '--mode', type=str, required=True,
-						help='choose between train and test.')
-	parser.add_argument('-n', '--name', type=str, required=True,
-						help='Your model name.')
-
-	# Parses arguments
-	args = parser.parse_args()
-	env = datares_roulette()
-
-	if args.mode == "train":
-		model = train_PPO2_agent(args.name, 7000000)
-	if args.mode == "test":
-		model_path = os.path.join('models', args.name)
-		model = PPO2.load(model_path)
-
-	test_model(model, EPISODES, STEPS, env)
+	multiplayer_roulette(10000)

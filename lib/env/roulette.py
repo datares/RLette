@@ -20,11 +20,11 @@ class datares_roulette(gym.Env):
 	def  seed(self, seed=None):
 		self.np_random, seed = seeding.np_random(seed)
 		return  [seed]
-	def  step(self, action):
-		#if action == 127:
-		#	action = np.array([0,0,0,0,0,0,0])
-		#else:
-		action = np.array(self.combos[action])
+	def step(self, action):
+		if action == 127:
+			action = np.array([0,0,0,0,0,0,0])
+		else:
+			action = np.array(self.combos[action])
 
 		if action.shape == (1, 7):
 			action = action[0]
