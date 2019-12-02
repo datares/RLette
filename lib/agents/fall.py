@@ -1,5 +1,5 @@
 from stable_baselines.common.vec_env import DummyVecEnv
-from stable_baselines import DQN, PPO2, A2C, TRPO, TD3
+from stable_baselines import DQN, PPO2, A2C, ACER
 import stable_baselines
 from lib.env.roulette import datares_roulette
 import os
@@ -21,14 +21,7 @@ def train_qj(timesteps, name):
 def train_chloe(timesteps, name):
     env = datares_roulette
     env = DummyVecEnv([env])
-    model = TRPO(stable_baselines.common.policies.MlpPolicy, env, verbose=1,)
-    model.learn(total_timesteps=timesteps)
-    model.save(name)
-    return model
-def train_angela(timesteps, name):
-    env = datares_roulette
-    env = DummyVecEnv([env])
-    model = TD3(stable_baselines.td3.policies.MlpPolicy, env, verbose=1,)
+    model = ACER(stable_baselines.common.policies.MlpPolicy, env, verbose=1,)
     model.learn(total_timesteps=timesteps)
     model.save(name)
     return model
@@ -48,15 +41,11 @@ def test_dqn(name):
     model_path = os.path.join('models', name)
     model = DQN.load(model_path)
     return model
-def test_trpo(name):
-    model_path = os.path.join('models', name)
-    model = TRPO.load(model_path)
-    return model
 def test_a2c(name):
     model_path = os.path.join('models', name)
     model = A2C.load(model_path)
     return model
-def test_td3(name):
+def test_acer(name):
     model_path = os.path.join('models', name)
-    model = TD3.load(model_path)
+    model = ACER.load(model_path)
     return model
