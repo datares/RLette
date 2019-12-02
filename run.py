@@ -2,7 +2,7 @@
 from lib.env.roulette import datares_roulette
 from lib.env.roulette import combos
 
-from lib.agents.fall import test_francesco
+from lib.agents.fall import test_nn
 
 from itertools import combinations 
 import pandas as pd
@@ -29,8 +29,10 @@ def compute_reward(obs, action):
 			reward -= 1
 	return reward
 def multiplayer_roulette(cycles):
-	budgets = [500, 500, 500]
-	agents =  [test_francesco("500k.zip"), test_francesco("1m.zip"), test_francesco("2m.zip")]
+	budgets = []
+	agents =  [test_nn("500k.zip"), test_nn("1m.zip"), test_nn("2m.zip")]
+	for i in range(len(agents)):
+		budgets.append(500)
 
 	for _ in range(cycles):
 		val = random.randint(0, 38) 
