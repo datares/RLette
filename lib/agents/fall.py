@@ -4,28 +4,28 @@ import stable_baselines
 from lib.env.roulette import datares_roulette
 import os
 
-def train_andrei(timesteps, name):
+def train_dqn(timesteps, name):
     env = datares_roulette
     env = DummyVecEnv([env])
     model = DQN(stable_baselines.deepq.policies.MlpPolicy, env, verbose=1,)
     model.learn(total_timesteps=timesteps)
     model.save(name)
     return model
-def train_qj(timesteps, name):
+def train_a2c(timesteps, name):
     env = datares_roulette
     env = DummyVecEnv([env])
     model = A2C(stable_baselines.common.policies.MlpPolicy, env, verbose=1,)
     model.learn(total_timesteps=timesteps)
     model.save(name)
     return model
-def train_chloe(timesteps, name):
+def train_acer(timesteps, name):
     env = datares_roulette
     env = DummyVecEnv([env])
     model = ACER(stable_baselines.common.policies.MlpPolicy, env, verbose=1,)
     model.learn(total_timesteps=timesteps)
     model.save(name)
     return model
-def train_francesco(timesteps, name):
+def train_ppo(timesteps, name):
     env = datares_roulette
     env = DummyVecEnv([env])
     model = PPO2(stable_baselines.common.policies.MlpPolicy, env, verbose=1,)
