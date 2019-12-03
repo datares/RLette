@@ -33,7 +33,7 @@ def multiplayer_roulette(cycles):
 	agents =  [test_a2c("QJ_3M.zip"), 
 			   test_acer("CHLOE_1M.zip"),  
 			   test_ppo("FRANCESCO_1M.zip"),
-			   test_dqn("DQN_REPLACE_ME.zip")]
+			   test_dqn("ANDREI_1M.zip")]
 
 	for i in range(len(agents)):
 		budgets.append(500)
